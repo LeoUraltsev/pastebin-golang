@@ -2,7 +2,6 @@ package save
 
 import (
 	"encoding/json"
-	"hash"
 	"io"
 	"log/slog"
 	"net/http"
