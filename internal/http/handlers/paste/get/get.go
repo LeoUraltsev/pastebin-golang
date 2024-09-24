@@ -27,7 +27,7 @@ func New(log *slog.Logger, pasteGetter PasteGetter) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		const op = "handlers.paste.get.New"
 
-		log = slog.With(
+		log = log.With(
 			slog.String("op", op),
 		)
 

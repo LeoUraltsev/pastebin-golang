@@ -52,7 +52,7 @@ Request
     "title": "Hello World", // Заголовок
     "data": "Hello pastebin golang", // Набор текстовой информации
     "status": "public", //public - доступно всем, unlisted - доступ только по ссылке
-    "expiration_time": "60" // время в минутах
+    "expiration_time": 60 // время в минутах
 }
 ```
 Response

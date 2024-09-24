@@ -7,6 +7,9 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/leouraltsev/pastebin-golang/internal/config"
+	"github.com/leouraltsev/pastebin-golang/internal/data/test"
+	"github.com/leouraltsev/pastebin-golang/internal/http/handlers/paste/get"
+	"github.com/leouraltsev/pastebin-golang/internal/http/handlers/paste/save"
 )
 
 func Run(log *slog.Logger) error {
@@ -18,8 +21,10 @@ func Run(log *slog.Logger) error {
 	// initial http server
 
 	r := chi.NewRouter()
+	mock := test.MocksData{}
+	r.Get("/{hash}", get.New(log, mock))
+	r.Post("/paste", save.New(log, mock))
 
-	
 
 	srvAddress := fmt.Sprintf("%s:%s", cfg.Host, cfg.Port)
 	srv := http.Server{
