@@ -22,13 +22,13 @@ func Run(log *slog.Logger) error {
 
 	r := chi.NewRouter()
 	mock := test.MocksData{}
-	r.Get("/{hash}", get.New(log, mock))
+	r.Get("/{hash}", get.PasteByHash(log, mock))
+	r.Get("/", get.LastCreationPaste(log, mock))
 	r.Post("/paste", save.New(log, mock))
-
 
 	srvAddress := fmt.Sprintf("%s:%s", cfg.Host, cfg.Port)
 	srv := http.Server{
-		Addr: srvAddress,
+		Addr:    srvAddress,
 		Handler: r,
 	}
 	log.Info("server starting", slog.String("address", srvAddress))

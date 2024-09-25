@@ -21,9 +21,12 @@ type Response struct {
 
 type PasteGetter interface {
 	GetPaste(hash string) (models.Paste, error)
+	GetLastPaste(limit int) ([]models.Paste, error)
 }
 
-func New(log *slog.Logger, pasteGetter PasteGetter) http.HandlerFunc {
+const limit = 10
+
+func PasteByHash(log *slog.Logger, pasteGetter PasteGetter) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		const op = "handlers.paste.get.New"
 
@@ -46,6 +49,34 @@ func New(log *slog.Logger, pasteGetter PasteGetter) http.HandlerFunc {
 
 		w.WriteHeader(http.StatusOK)
 		w.Write(res)
+	}
+}
+
+func LastCreationPaste(log *slog.Logger, pasteGetter PasteGetter) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		const op = "handlers.paste.get.LastCreationPaste"
+
+		log = log.With(
+			slog.String("op", op),
+		)
+
+		pastes, err := pasteGetter.GetLastPaste(limit)
+		if err != nil {
+			log.Error("error getting last paste", slog.String("err", err.Error()))
+		}
+
+		var res []ResponsePaste
+		for _, paste := range pastes {
+			res = append(res, ResponsePaste{
+				Title: paste.Title,
+				Data:  paste.Data,
+			})
+		}
+
+		marshal, _ := json.Marshal(res)
+
+		w.WriteHeader(http.StatusOK)
+		w.Write(marshal)
 
 	}
 }
